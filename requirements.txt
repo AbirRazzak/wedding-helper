@@ -1,0 +1,2 @@
+environs~=9.5.0
+pydantic~=1.9.0
