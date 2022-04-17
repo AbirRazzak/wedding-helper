@@ -2,7 +2,7 @@ from pprint import pprint
 
 import environs
 
-from save_the_date.parser import SaveTheDateResponsesParser
+from save_the_date.csv_parser import SaveTheDateResponsesParser
 
 
 def setup_environment() -> environs.Env:

@@ -1,21 +1,14 @@
 from __future__ import annotations
 
-import abc
 import csv
 import pathlib
 
 import environs
-import pydantic
 
-
-class SaveTheDateResponse(pydantic.BaseModel):
-    full_name: str
-    email_address: str
-
-
-class ISaveTheDateResponsesParser(abc.ABC):
-    def get_names_of_responders(self) -> set[str]:
-        pass
+from save_the_date import (
+    ISaveTheDateResponsesParser,
+    SaveTheDateResponse
+)
 
 
 class SaveTheDateResponsesParser(ISaveTheDateResponsesParser):
@@ -32,9 +25,13 @@ class SaveTheDateResponsesParser(ISaveTheDateResponsesParser):
     def new(
         env: environs.Env
     ) -> SaveTheDateResponsesParser:
-        csv_file_path: pathlib.Path = env.path('SAVE_THE_DATE_PLUS_ONE_CSV_FILE_PATH')
         responses = SaveTheDateResponsesParser._parse_csv_file_into_responses(
-            csv_file_path
+            csv_file_path=env.path('SAVE_THE_DATE_PLUS_ONE_CSV_FILE_PATH')
+        )
+        responses.extend(
+            SaveTheDateResponsesParser._parse_csv_file_into_responses(
+                csv_file_path=env.path('SAVE_THE_DATE_WITHOUT_PLUS_ONE_CSV_FILE_PATH')
+            )
         )
 
         return SaveTheDateResponsesParser(
