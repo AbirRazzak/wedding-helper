@@ -6,9 +6,9 @@ import pathlib
 import environs
 
 from save_the_date import (
-    ISaveTheDateResponsesParser,
-    SaveTheDateResponse
+    ISaveTheDateResponsesParser
 )
+from save_the_date.response import SaveTheDateResponse
 
 
 class SaveTheDateResponsesParser(ISaveTheDateResponsesParser):
@@ -39,16 +39,22 @@ class SaveTheDateResponsesParser(ISaveTheDateResponsesParser):
         )
 
     @staticmethod
+    def _parse_csv_data_into_response(
+        data: dict[str, str]
+    ) -> SaveTheDateResponse:
+        return SaveTheDateResponse(
+            full_name=data['What is your full name?'],
+            email_address=data['What is your email address?']
+        )
+
+    @staticmethod
     def _parse_csv_file_into_responses(
         csv_file_path: pathlib.Path
     ) -> list[SaveTheDateResponse]:
         responses = []
         with open(file=csv_file_path, encoding='utf8') as data:
             for line in csv.DictReader(data):
-                response = SaveTheDateResponse(
-                    full_name=line['What is your full name?'],
-                    email_address=line['What is your email address?']
-                )
+                response = SaveTheDateResponsesParser._parse_csv_data_into_response(data=line)
                 responses.append(response)
 
         return responses
