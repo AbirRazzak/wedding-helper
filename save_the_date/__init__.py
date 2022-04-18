@@ -4,5 +4,5 @@ import abc
 
 
 class ISaveTheDateResponsesParser(abc.ABC):
-    def get_names_of_responders(self) -> set[str]:
+    def get_names_of_responders(self) -> list[str]:
         pass
