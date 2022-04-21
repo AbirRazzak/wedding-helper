@@ -44,7 +44,10 @@ class SaveTheDateResponsesParser(ISaveTheDateResponsesParser):
     ) -> SaveTheDateResponse:
         return SaveTheDateResponse(
             full_name=data['What is your full name?'],
-            email_address=data['What is your email address?']
+            email_address=data['What is your email address?'],
+            plus_ones=[],  # TODO implement
+            is_hotel_needed=data['Do you need us to help book a hotel room?'],  # TODO make this a boolean
+            is_vaccined=data['Are you vaccinated against COVID-19?'],  # TODO make this a boolean
         )
 
     @staticmethod
