@@ -39,6 +39,12 @@ class SaveTheDateResponsesParser(ISaveTheDateResponsesParser):
         )
 
     @staticmethod
+    def _handle_boolean_question_answer(
+        answer: str
+    ) -> bool:
+        return answer.upper() == 'YES'
+
+    @staticmethod
     def _parse_csv_data_into_response(
         data: dict[str, str]
     ) -> SaveTheDateResponse:
@@ -46,8 +52,8 @@ class SaveTheDateResponsesParser(ISaveTheDateResponsesParser):
             full_name=data['What is your full name?'],
             email_address=data['What is your email address?'],
             plus_ones=[],  # TODO implement
-            is_hotel_needed=data['Do you need us to help book a hotel room?'],  # TODO make this a boolean
-            is_vaccined=data['Are you vaccinated against COVID-19?'],  # TODO make this a boolean
+            is_hotel_needed=SaveTheDateResponsesParser._handle_boolean_question_answer(data['Do you need us to help book a hotel room?']),
+            is_vaccinated=SaveTheDateResponsesParser._handle_boolean_question_answer(data['Are you vaccinated against COVID-19?'])
         )
 
     @staticmethod
