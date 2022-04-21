@@ -8,7 +8,10 @@ import environs
 from save_the_date import (
     ISaveTheDateResponsesParser
 )
-from save_the_date.response import SaveTheDateResponse
+from save_the_date.response import (
+    SaveTheDateResponse,
+    SaveTheDatePlusOne
+)
 
 
 class SaveTheDateResponsesParser(ISaveTheDateResponsesParser):
@@ -45,13 +48,69 @@ class SaveTheDateResponsesParser(ISaveTheDateResponsesParser):
         return answer.upper() == 'YES'
 
     @staticmethod
+    def _split_answer_based_off_delimiter(
+        answer: str,
+        delimiter: str
+    ) -> list[str]:
+        return [
+            plus_one_name.strip()
+            for plus_one_name in answer.split(delimiter)
+        ]
+
+    @staticmethod
+    def _determine_delimiter_and_split(
+        answer: str
+    ) -> list[str]:
+        if ',' in answer:
+            return SaveTheDateResponsesParser._split_answer_based_off_delimiter(
+                answer=answer,
+                delimiter=','
+            )
+        elif '&' in answer:
+            return SaveTheDateResponsesParser._split_answer_based_off_delimiter(
+                answer=answer,
+                delimiter='&'
+            )
+        elif 'and' in answer:
+            return SaveTheDateResponsesParser._split_answer_based_off_delimiter(
+                answer=answer,
+                delimiter='and'
+            )
+        else:
+            return [answer]
+
+    @staticmethod
+    def _parse_plus_ones_answer(
+        answer: str
+    ) -> list[SaveTheDatePlusOne]:
+        if answer == '':
+            return []
+
+        plus_ones: list[SaveTheDatePlusOne] = []
+
+        plus_ones_entries = SaveTheDateResponsesParser._determine_delimiter_and_split(answer)
+
+        for plus_one_entry in plus_ones_entries:
+            plus_ones.append(
+                SaveTheDatePlusOne(
+                    full_name=plus_one_entry
+                    # TODO populate the age attribute if it exists
+                )
+            )
+
+        return plus_ones
+
+    @staticmethod
     def _parse_csv_data_into_response(
         data: dict[str, str]
     ) -> SaveTheDateResponse:
         return SaveTheDateResponse(
             full_name=data['What is your full name?'],
             email_address=data['What is your email address?'],
-            plus_ones=[],  # TODO implement
+            plus_ones=SaveTheDateResponsesParser._parse_plus_ones_answer(
+                # In one of the CSV files, this column does not exist. In that case, we return an empty list.
+                data.get("Who else is coming with you? (Indicate age if under 13, full names please)", '')
+            ),
             is_hotel_needed=SaveTheDateResponsesParser._handle_boolean_question_answer(data['Do you need us to help book a hotel room?']),
             is_vaccinated=SaveTheDateResponsesParser._handle_boolean_question_answer(data['Are you vaccinated against COVID-19?'])
         )
