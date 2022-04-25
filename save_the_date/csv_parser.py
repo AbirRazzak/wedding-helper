@@ -22,11 +22,15 @@ class SaveTheDateResponsesParser(ISaveTheDateResponsesParser):
     ):
         self.responses = responses
 
-    def get_responses(self):
+    def get_responses(
+        self
+    ):
         return self.responses
 
     # TODO: I want to get rid of this method in favor of the one above.
-    def get_names_of_responders(self):
+    def get_names_of_responders(
+        self
+    ):
         return [response.full_name for response in self.responses]
 
     @staticmethod
@@ -63,29 +67,26 @@ class SaveTheDateResponsesParser(ISaveTheDateResponsesParser):
         ]
 
     @staticmethod
-    def _determine_delimiter_and_split(
+    def _split_by_delimiters(
         answer: str
     ) -> list[str]:
-        if ',' in answer:
-            return SaveTheDateResponsesParser._split_answer_based_off_delimiter(
-                answer=answer,
-                delimiter=','
-            )
-        elif '&' in answer:
-            return SaveTheDateResponsesParser._split_answer_based_off_delimiter(
-                answer=answer,
-                delimiter='&'
-            )
-        elif 'and' in answer:
-            return SaveTheDateResponsesParser._split_answer_based_off_delimiter(
-                answer=answer,
-                delimiter='and'
-            )
-        else:
-            return [answer]
+        delimiters = [',', '&', 'and']
+        splits: list[str] = [answer]
+
+        for delimiter in delimiters:
+            for split in list(splits):
+                splits.remove(split)
+                splits.extend(
+                    SaveTheDateResponsesParser._split_answer_based_off_delimiter(
+                        answer=split,
+                        delimiter=delimiter
+                    )
+                )
+
+        return splits
 
     @staticmethod
-    def _parse_plus_ones_answer(
+    def parse_plus_ones_answer(
         answer: str
     ) -> list[SaveTheDatePlusOne]:
         if answer == '':
@@ -93,7 +94,7 @@ class SaveTheDateResponsesParser(ISaveTheDateResponsesParser):
 
         plus_ones: list[SaveTheDatePlusOne] = []
 
-        plus_ones_entries = SaveTheDateResponsesParser._determine_delimiter_and_split(answer)
+        plus_ones_entries = SaveTheDateResponsesParser._split_by_delimiters(answer)
 
         for plus_one_entry in plus_ones_entries:
             plus_ones.append(
@@ -112,12 +113,16 @@ class SaveTheDateResponsesParser(ISaveTheDateResponsesParser):
         return SaveTheDateResponse(
             full_name=data[SaveTheDateQuestions.full_name.value],
             email_address=data[SaveTheDateQuestions.email_address.value],
-            plus_ones=SaveTheDateResponsesParser._parse_plus_ones_answer(
+            plus_ones=SaveTheDateResponsesParser.parse_plus_ones_answer(
                 # In one of the CSV files, this column does not exist. In that case, we return an empty list.
                 data.get(SaveTheDateQuestions.plus_ones.value, '')
             ),
-            is_hotel_needed=SaveTheDateResponsesParser._handle_boolean_question_answer(data[SaveTheDateQuestions.hotel_needed.value]),
-            is_vaccinated=SaveTheDateResponsesParser._handle_boolean_question_answer(data[SaveTheDateQuestions.vaccinated.value]),
+            is_hotel_needed=SaveTheDateResponsesParser._handle_boolean_question_answer(
+                data[SaveTheDateQuestions.hotel_needed.value]
+            ),
+            is_vaccinated=SaveTheDateResponsesParser._handle_boolean_question_answer(
+                data[SaveTheDateQuestions.vaccinated.value]
+            ),
         )
 
     @staticmethod
