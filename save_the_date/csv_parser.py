@@ -8,6 +8,7 @@ import environs
 from save_the_date import (
     ISaveTheDateResponsesParser
 )
+from save_the_date.question import SaveTheDateQuestions
 from save_the_date.response import (
     SaveTheDateResponse,
     SaveTheDatePlusOne
@@ -109,14 +110,14 @@ class SaveTheDateResponsesParser(ISaveTheDateResponsesParser):
         data: dict[str, str]
     ) -> SaveTheDateResponse:
         return SaveTheDateResponse(
-            full_name=data['What is your full name?'],
-            email_address=data['What is your email address?'],
+            full_name=data[SaveTheDateQuestions.full_name.value],
+            email_address=data[SaveTheDateQuestions.email_address.value],
             plus_ones=SaveTheDateResponsesParser._parse_plus_ones_answer(
                 # In one of the CSV files, this column does not exist. In that case, we return an empty list.
-                data.get("Who else is coming with you? (Indicate age if under 13, full names please)", '')
+                data.get(SaveTheDateQuestions.plus_ones.value, '')
             ),
-            is_hotel_needed=SaveTheDateResponsesParser._handle_boolean_question_answer(data['Do you need us to help book a hotel room?']),
-            is_vaccinated=SaveTheDateResponsesParser._handle_boolean_question_answer(data['Are you vaccinated against COVID-19?'])
+            is_hotel_needed=SaveTheDateResponsesParser._handle_boolean_question_answer(data[SaveTheDateQuestions.hotel_needed.value]),
+            is_vaccinated=SaveTheDateResponsesParser._handle_boolean_question_answer(data[SaveTheDateQuestions.vaccinated.value]),
         )
 
     @staticmethod
