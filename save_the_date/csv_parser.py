@@ -10,17 +10,19 @@ from save_the_date import (
 )
 from save_the_date.question import SaveTheDateQuestions
 from save_the_date.response import (
-    SaveTheDateResponse,
-    SaveTheDatePlusOne
+    SaveTheDateResponse
 )
+from save_the_date.response_parser import SaveTheDateResponseParser
 
 
-class SaveTheDateResponsesParser(ISaveTheDateResponsesParser):
+class SaveTheDateCSVParser(ISaveTheDateResponsesParser):
     def __init__(
         self,
-        responses: list[SaveTheDateResponse]
+        responses: list[SaveTheDateResponse],
+        parser: SaveTheDateResponseParser
     ):
         self.responses = responses
+        self.parser = parser
 
     def get_responses(
         self
@@ -36,103 +38,52 @@ class SaveTheDateResponsesParser(ISaveTheDateResponsesParser):
     @staticmethod
     def new(
         env: environs.Env
-    ) -> SaveTheDateResponsesParser:
-        responses = SaveTheDateResponsesParser._parse_csv_file_into_responses(
+    ) -> SaveTheDateCSVParser:
+        csv_parser = SaveTheDateCSVParser(
+            responses=[],
+            parser=SaveTheDateResponseParser()
+        )
+
+        responses = csv_parser._parse_csv_file_into_responses(
             csv_file_path=env.path('SAVE_THE_DATE_PLUS_ONE_CSV_FILE_PATH')
         )
         responses.extend(
-            SaveTheDateResponsesParser._parse_csv_file_into_responses(
+            csv_parser._parse_csv_file_into_responses(
                 csv_file_path=env.path('SAVE_THE_DATE_WITHOUT_PLUS_ONE_CSV_FILE_PATH')
             )
         )
 
-        return SaveTheDateResponsesParser(
-            responses=responses
-        )
+        csv_parser.responses = responses
 
-    @staticmethod
-    def _handle_boolean_question_answer(
-        answer: str
-    ) -> bool:
-        return answer.upper() == 'YES'
+        return csv_parser
 
-    @staticmethod
-    def _split_answer_based_off_delimiter(
-        answer: str,
-        delimiter: str
-    ) -> list[str]:
-        return [
-            plus_one_name.strip()
-            for plus_one_name in answer.split(delimiter)
-        ]
-
-    @staticmethod
-    def _split_by_delimiters(
-        answer: str
-    ) -> list[str]:
-        delimiters = [',', '&', 'and']
-        splits: list[str] = [answer]
-
-        for delimiter in delimiters:
-            for split in list(splits):
-                splits.remove(split)
-                splits.extend(
-                    SaveTheDateResponsesParser._split_answer_based_off_delimiter(
-                        answer=split,
-                        delimiter=delimiter
-                    )
-                )
-
-        return splits
-
-    @staticmethod
-    def parse_plus_ones_answer(
-        answer: str
-    ) -> list[SaveTheDatePlusOne]:
-        if answer == '':
-            return []
-
-        plus_ones: list[SaveTheDatePlusOne] = []
-
-        plus_ones_entries = SaveTheDateResponsesParser._split_by_delimiters(answer)
-
-        for plus_one_entry in plus_ones_entries:
-            plus_ones.append(
-                SaveTheDatePlusOne(
-                    full_name=plus_one_entry
-                    # TODO populate the age attribute if it exists
-                )
-            )
-
-        return plus_ones
-
-    @staticmethod
-    def _parse_csv_data_into_response(
+    def parse_csv_data_into_response(
+        self,
         data: dict[str, str]
     ) -> SaveTheDateResponse:
         return SaveTheDateResponse(
             full_name=data[SaveTheDateQuestions.full_name.value],
             email_address=data[SaveTheDateQuestions.email_address.value],
-            plus_ones=SaveTheDateResponsesParser.parse_plus_ones_answer(
+            plus_ones=self.parser.parse_plus_ones_response(
                 # In one of the CSV files, this column does not exist. In that case, we return an empty list.
                 data.get(SaveTheDateQuestions.plus_ones.value, '')
             ),
-            is_hotel_needed=SaveTheDateResponsesParser._handle_boolean_question_answer(
+            is_hotel_needed=self.parser.handle_boolean_question_answer(
                 data[SaveTheDateQuestions.hotel_needed.value]
             ),
-            is_vaccinated=SaveTheDateResponsesParser._handle_boolean_question_answer(
+            is_vaccinated=self.parser.handle_boolean_question_answer(
                 data[SaveTheDateQuestions.vaccinated.value]
             ),
         )
 
-    @staticmethod
     def _parse_csv_file_into_responses(
+        self,
         csv_file_path: pathlib.Path
     ) -> list[SaveTheDateResponse]:
         responses = []
         with open(file=csv_file_path, encoding='utf8') as data:
             for line in csv.DictReader(data):
-                response = SaveTheDateResponsesParser._parse_csv_data_into_response(data=line)
-                responses.append(response)
+                response = self.parse_csv_data_into_response(data=line)
+                self.responses.append(response)
 
         return responses

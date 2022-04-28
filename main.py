@@ -2,8 +2,7 @@ from pprint import pprint
 
 import environs
 
-from master_list.csv_parser import get_names_of_everyone_on_the_list
-from save_the_date.csv_parser import SaveTheDateResponsesParser
+from save_the_date.csv_parser import SaveTheDateCSVParser
 
 
 def setup_environment() -> environs.Env:
@@ -15,5 +14,5 @@ def setup_environment() -> environs.Env:
 
 if __name__ == '__main__':
     env = setup_environment()
-    save_the_date_parser = SaveTheDateResponsesParser.new(env)
+    save_the_date_parser = SaveTheDateCSVParser.new(env)
     pprint(sorted(save_the_date_parser.get_names_of_responders()))

@@ -1,9 +1,9 @@
-from save_the_date.csv_parser import SaveTheDateResponsesParser
+from save_the_date.csv_parser import SaveTheDateCSVParser
 from save_the_date.question import SaveTheDateQuestions
 from save_the_date.response import (
-    SaveTheDateResponse,
-    SaveTheDatePlusOne
+    SaveTheDateResponse
 )
+from save_the_date.response_parser import SaveTheDateResponseParser
 
 
 def test_parse_csv_data_into_response():
@@ -24,53 +24,7 @@ def test_parse_csv_data_into_response():
         is_vaccinated=True
     )
 
-    result = SaveTheDateResponsesParser._parse_csv_data_into_response(raw_data)
+    csv_parser = SaveTheDateCSVParser(responses=[], parser=SaveTheDateResponseParser())
+    result = csv_parser.parse_csv_data_into_response(raw_data)
 
     assert result == expected_response
-
-
-def test_parse_plus_ones_answer_with_single_plus_one_and_no_age():
-    answer = 'John Doe'
-    expected_plus_one = SaveTheDatePlusOne(
-        full_name=answer,
-    )
-
-    result = SaveTheDateResponsesParser.parse_plus_ones_answer(answer)
-
-    assert result == [expected_plus_one]
-
-
-def test_parse_plus_one_answer_with_single_unique_delimiter():
-    p1 = 'Person 1'
-    p2 = 'Person 2'
-    p3 = 'Person 3'
-
-    answer = f'{p1}, {p2}, {p3}'
-
-    expected = [
-        SaveTheDatePlusOne(full_name=p1),
-        SaveTheDatePlusOne(full_name=p2),
-        SaveTheDatePlusOne(full_name=p3)
-    ]
-
-    result = SaveTheDateResponsesParser.parse_plus_ones_answer(answer)
-
-    assert result == expected
-
-
-def test_parse_plus_one_answer_with_multiple_unique_delimiters():
-    p1 = 'Person 1'
-    p2 = 'Person 2'
-    p3 = 'Person 3'
-
-    answer = f'{p1}, {p2} and {p3}'
-
-    expected = [
-        SaveTheDatePlusOne(full_name=p1),
-        SaveTheDatePlusOne(full_name=p2),
-        SaveTheDatePlusOne(full_name=p3)
-    ]
-
-    result = SaveTheDateResponsesParser.parse_plus_ones_answer(answer)
-
-    assert result == expected

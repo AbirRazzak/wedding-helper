@@ -2,11 +2,11 @@ from pprint import pprint
 
 from main import setup_environment
 from master_list.csv_parser import get_names_of_everyone_on_the_list
-from save_the_date.csv_parser import SaveTheDateResponsesParser
+from save_the_date.csv_parser import SaveTheDateCSVParser
 
 if __name__ == '__main__':
     env = setup_environment()
-    save_the_date_parser = SaveTheDateResponsesParser.new(env)
+    save_the_date_parser = SaveTheDateCSVParser.new(env)
     print('The following people have responded to the save the date:')
     pprint(sorted(save_the_date_parser.get_names_of_responders()))
 
