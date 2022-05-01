@@ -25,6 +25,6 @@ def test_parse_csv_data_into_response():
     )
 
     csv_parser = SaveTheDateCSVParser(responses=[], parser=SaveTheDateResponseParser())
-    result = csv_parser.parse_csv_data_into_response(raw_data)
+    result = csv_parser.parse_data_into_response(raw_data)
 
     assert result == expected_response

@@ -20,6 +20,7 @@ class SaveTheDateResponseParser:
         plus_ones_entries = self._split_by_delimiters(response)
 
         for plus_one_entry in plus_ones_entries:
+            # TODO - parse plus one entry to get name and age
             plus_ones.append(
                 SaveTheDatePlusOne(
                     full_name=plus_one_entry

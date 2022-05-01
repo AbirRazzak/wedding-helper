@@ -57,7 +57,7 @@ class SaveTheDateCSVParser(ISaveTheDateResponsesParser):
 
         return csv_parser
 
-    def parse_csv_data_into_response(
+    def parse_data_into_response(
         self,
         data: dict[str, str]
     ) -> SaveTheDateResponse:
@@ -83,7 +83,7 @@ class SaveTheDateCSVParser(ISaveTheDateResponsesParser):
         responses = []
         with open(file=csv_file_path, encoding='utf8') as data:
             for line in csv.DictReader(data):
-                response = self.parse_csv_data_into_response(data=line)
-                self.responses.append(response)
+                response = self.parse_data_into_response(data=line)
+                responses.append(response)
 
         return responses
