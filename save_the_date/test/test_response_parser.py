@@ -2,6 +2,26 @@ from save_the_date.response import SaveTheDatePlusOne
 from save_the_date.response_parser import SaveTheDateResponseParser
 
 
+def test_parse_full_name_response_removes_leading_and_trailing_whitespace():
+    response = '   John Doe  '
+    expected = 'John Doe'
+
+    parser = SaveTheDateResponseParser()
+    result = parser.parse_full_name_response(response)
+
+    assert result == expected
+
+
+def test_parse_full_name_response_removes_double_whitespaces():
+    response = 'John  Doe'
+    expected = 'John Doe'
+
+    parser = SaveTheDateResponseParser()
+    result = parser.parse_full_name_response(response)
+
+    assert result == expected
+
+
 def test_parse_plus_ones_answer_with_single_plus_one_and_no_age():
     answer = 'John Doe'
     expected_plus_one = SaveTheDatePlusOne(

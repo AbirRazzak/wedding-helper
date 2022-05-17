@@ -62,7 +62,7 @@ class SaveTheDateCSVParser(ISaveTheDateResponsesParser):
         data: dict[str, str]
     ) -> SaveTheDateResponse:
         return SaveTheDateResponse(
-            full_name=data[SaveTheDateQuestions.full_name.value],
+            full_name=self.parser.parse_full_name_response(data[SaveTheDateQuestions.full_name.value]),
             email_address=data[SaveTheDateQuestions.email_address.value],
             plus_ones=self.parser.parse_plus_ones_response(
                 # In one of the CSV files, this column does not exist. In that case, we return an empty list.

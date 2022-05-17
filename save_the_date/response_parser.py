@@ -2,6 +2,14 @@ from save_the_date.response import SaveTheDatePlusOne
 
 
 class SaveTheDateResponseParser:
+    def parse_full_name_response(
+        self,
+        response: str
+    ) -> str:
+        name = response.strip()
+        name = name.replace('  ', ' ')
+        return name
+
     def handle_boolean_question_answer(
         self,
         answer: str
