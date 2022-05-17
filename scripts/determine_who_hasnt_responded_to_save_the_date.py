@@ -18,3 +18,8 @@ if __name__ == '__main__':
 
     print('The following people have not responded to the save the date:')
     pprint(sorted(people_who_have_not_responded))
+
+    extra_people_not_on_notion = sorted([x for x in filter_set if x not in everyone_on_notion])
+    if extra_people_not_on_notion:
+        print('The following people have responded to the save the date, but are not on the notion list:')
+        pprint(extra_people_not_on_notion)
