@@ -6,20 +6,21 @@ from save_the_date.csv_parser import SaveTheDateCSVParser
 
 if __name__ == '__main__':
     env = setup_environment()
+
     save_the_date_parser = SaveTheDateCSVParser.new(env)
+    save_the_date_responders = set(save_the_date_parser.get_names_of_responders())  # converted to set because some people filled it out twice
     print('The following people have responded to the save the date:')
-    pprint(sorted(save_the_date_parser.get_names_of_responders()))
+    pprint(sorted(save_the_date_responders))
 
     everyone_on_notion = get_names_of_everyone_on_the_list(env.path('NOTION_CSV_FILE_PATH'))
+    people_to_ignore = env.list('DECLINED_GUESTS', delimiter=', ')
+    people_to_look_for = [name for name in everyone_on_notion if name not in people_to_ignore]
 
-    filter_set = set(save_the_date_parser.get_names_of_responders())
-
-    people_who_have_not_responded = [x for x in everyone_on_notion if x not in filter_set]
-
+    people_who_have_not_responded = [x for x in people_to_look_for if x not in save_the_date_responders]
     print('The following people have not responded to the save the date:')
     pprint(sorted(people_who_have_not_responded))
 
-    extra_people_not_on_notion = sorted([x for x in filter_set if x not in everyone_on_notion])
+    extra_people_not_on_notion = sorted([x for x in save_the_date_responders if x not in people_to_look_for])
     if extra_people_not_on_notion:
         print('The following people have responded to the save the date, but are not on the notion list:')
         pprint(extra_people_not_on_notion)
