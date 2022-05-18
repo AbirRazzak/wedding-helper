@@ -8,7 +8,8 @@ if __name__ == '__main__':
     env = setup_environment()
 
     save_the_date_parser = SaveTheDateCSVParser.new(env)
-    save_the_date_responders = set(save_the_date_parser.get_names_of_responders())  # converted to set because some people filled it out twice
+    save_the_date_responses = save_the_date_parser.get_responses()
+    save_the_date_responders = {response.full_name for response in save_the_date_responses}
     print('The following people have responded to the save the date:')
     pprint(sorted(save_the_date_responders))
 

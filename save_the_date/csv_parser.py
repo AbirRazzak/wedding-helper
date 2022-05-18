@@ -29,12 +29,6 @@ class SaveTheDateCSVParser(ISaveTheDateResponsesParser):
     ):
         return self.responses
 
-    # TODO: I want to get rid of this method in favor of the one above.
-    def get_names_of_responders(
-        self
-    ):
-        return [response.full_name for response in self.responses]
-
     @staticmethod
     def new(
         env: environs.Env
