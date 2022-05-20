@@ -25,6 +25,8 @@ class SaveTheDateResponseRepo(ISaveTheDateResponseRepo):
         self,
         responses: list[SaveTheDateResponse] = None
     ):
+        if responses is None:
+            responses = []
         self._responses = responses
 
     def get_all_responses(
