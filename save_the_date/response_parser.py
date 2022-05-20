@@ -1,7 +1,36 @@
+from save_the_date import (
+    SaveTheDateResponse,
+    ISaveTheDateResponsesParser
+)
+from save_the_date.question import SaveTheDateQuestions
 from save_the_date.response import SaveTheDatePlusOne
 
 
-class SaveTheDateResponseParser:
+class SaveTheDateResponseParser(ISaveTheDateResponsesParser):
+    def get_responses(
+        self
+    ) -> list[SaveTheDateResponse]:
+        raise NotImplementedError()
+
+    def parse_data_into_response(
+        self,
+        data: dict[str, str]
+    ) -> SaveTheDateResponse:
+        return SaveTheDateResponse(
+            full_name=self.parse_full_name_response(data[SaveTheDateQuestions.full_name.value]),
+            email_address=data[SaveTheDateQuestions.email_address.value],
+            plus_ones=self.parse_plus_ones_response(
+                # In one of the CSV files, this column does not exist. In that case, we return an empty list.
+                data.get(SaveTheDateQuestions.plus_ones.value, '')
+            ),
+            is_hotel_needed=self.handle_boolean_question_answer(
+                data[SaveTheDateQuestions.hotel_needed.value]
+            ),
+            is_vaccinated=self.handle_boolean_question_answer(
+                data[SaveTheDateQuestions.vaccinated.value]
+            ),
+        )
+
     def parse_full_name_response(
         self,
         response: str
