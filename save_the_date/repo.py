@@ -30,7 +30,7 @@ class SaveTheDateResponseRepo(ISaveTheDateResponseRepo):
     def get_all_responses(
         self
     ) -> list[SaveTheDateResponse]:
-        return [value for key, value in self._responses]
+        return self._responses
 
     def add_response(
         self,
