@@ -10,11 +10,14 @@ from withjoy.party_name_generator import PartyNameGenerator
 
 
 def test_convert_save_the_date_repo():
+    name = 'Foo Bar'
+    email = 'foo@bar.com'
+
     save_the_date_repo = SaveTheDateResponseRepo(
         responses=[
             SaveTheDateResponse(
-                full_name='Foo Bar',
-                email_address='foo@bar.com',
+                full_name=name,
+                email_address=email,
                 is_hotel_needed=False,
                 is_vaccinated=False
             )
@@ -24,8 +27,8 @@ def test_convert_save_the_date_repo():
     expected = WithjoyGuestList(
         guests=[
             WithjoyGuest(
-                name='Foo Bar',
-                email='foo@bar.com'
+                name=name,
+                email=email
             )
         ]
     )
@@ -39,14 +42,19 @@ def test_convert_save_the_date_repo():
 
 
 def test_convert_save_the_date_repo_with_plus_ones():
+    name = 'Foo Bar'
+    email = 'foo@bar.com'
+    plus_one_name = 'Foo Bar Plus One'
+    party = 'foo-bar'
+
     save_the_date_repo = SaveTheDateResponseRepo(
         responses=[
             SaveTheDateResponse(
-                full_name='Foo Bar',
-                email_address='foo@bar.com',
+                full_name=name,
+                email_address=email,
                 plus_ones=[
                     SaveTheDatePlusOne(
-                        full_name='Foo Bar Plus One',
+                        full_name=plus_one_name,
                     )
                 ],
                 is_hotel_needed=False,
@@ -58,13 +66,13 @@ def test_convert_save_the_date_repo_with_plus_ones():
     expected = WithjoyGuestList(
         guests=[
             WithjoyGuest(
-                name='Foo Bar',
-                email='foo@bar.com',
-                party='foo-bar'
+                name=name,
+                email=email,
+                party=party
             ),
             WithjoyGuest(
-                name='Foo Bar Plus One',
-                party='foo-bar'
+                name=plus_one_name,
+                party=party
             )
         ]
     )
