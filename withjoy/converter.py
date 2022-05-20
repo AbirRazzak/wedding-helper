@@ -17,6 +17,16 @@ class WithjoyConverter:
 
         self.party_name_generator = party_name_generator
 
+    def convert_save_the_date_response_full_name_to_withjoy_guest_name(
+        self,
+        save_the_date_response_full_name: str
+    ) -> str:
+        '''
+        Perform transformations on the full name to make it suitable for Withjoy.
+        Withjoy does not allow special characters in the guest name.
+        '''
+        return save_the_date_response_full_name.replace('&', 'and')
+
     def convert_save_the_date_response_to_withjoy_guests(
         self,
         save_the_date_response: SaveTheDateResponse
@@ -27,7 +37,7 @@ class WithjoyConverter:
         )
 
         main_contact = WithjoyGuest(
-            name=save_the_date_response.full_name,
+            name=self.convert_save_the_date_response_full_name_to_withjoy_guest_name(save_the_date_response.full_name),
             email=save_the_date_response.email_address,
             party=party
         )
@@ -35,7 +45,7 @@ class WithjoyConverter:
 
         for plus_one in save_the_date_response.plus_ones:
             extra_guest = WithjoyGuest(
-                name=plus_one.full_name,
+                name=self.convert_save_the_date_response_full_name_to_withjoy_guest_name(plus_one.full_name),
                 party=party
             )
             guests.append(extra_guest)
