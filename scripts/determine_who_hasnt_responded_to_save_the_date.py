@@ -1,7 +1,7 @@
 from pprint import pprint
 
 from main import setup_environment
-from master_list.csv_parser import get_names_of_everyone_on_the_list
+from notion.csv_parser import get_names_of_everyone_on_the_list
 from save_the_date.csv_parser import SaveTheDateCSVParser
 
 if __name__ == '__main__':
