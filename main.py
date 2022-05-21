@@ -3,6 +3,7 @@ import environs
 from save_the_date.repo import SaveTheDateResponseRepo
 from save_the_date.response_parser import SaveTheDateResponseParser
 from withjoy.converter import WithjoyConverter
+from withjoy.exporter import WithjoyCSVExporter
 
 
 def setup_environment() -> environs.Env:
@@ -23,3 +24,7 @@ if __name__ == '__main__':
         save_the_date_repo=save_the_date_response_repo
     )
     print(withjoy_guest_list)
+    WithjoyCSVExporter().export_withjoy_guest_list_to_csv_file(
+        withjoy_guest_list=withjoy_guest_list,
+        csv_file_path=env.path('WITHJOY_GUEST_LIST_CSV_FILE_PATH')
+    )
