@@ -70,3 +70,22 @@ def test_parse_plus_one_answer_with_multiple_unique_delimiters():
     result = parser.parse_plus_ones_response(answer)
 
     assert result == expected
+
+
+def test_parse_plus_ones_response_has_and_in_middle_of_name():
+    """
+    This test is to ensure that the parser is able to handle the case where a plus one's name
+    contains the word 'and' in the middle of the name. There was a bug where the parser would
+    be splitting people's names if it found the word 'and' in the middle of the name.
+    """
+
+    answer = 'Cassandra'
+
+    expected = [
+        SaveTheDatePlusOne(full_name=answer)
+    ]
+
+    parser = SaveTheDateResponseParser()
+    result = parser.parse_plus_ones_response(answer)
+
+    assert result == expected
