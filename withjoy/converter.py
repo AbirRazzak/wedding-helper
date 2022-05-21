@@ -25,7 +25,8 @@ class WithjoyConverter:
         Perform transformations on the full name to make it suitable for Withjoy.
         Withjoy does not allow special characters in the guest name.
         '''
-        return save_the_date_response_full_name.replace('&', 'and')
+        # TODO placing this hack in for now in the meantime while fixing some responses
+        return save_the_date_response_full_name.replace(' & ', ' and ').replace(' and ', ' n ')
 
     def convert_save_the_date_response_to_withjoy_guests(
         self,
