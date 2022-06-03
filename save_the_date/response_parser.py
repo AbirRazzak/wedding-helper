@@ -37,6 +37,7 @@ class SaveTheDateResponseParser(ISaveTheDateResponsesParser):
     ) -> str:
         name = response.strip()
         name = name.replace('  ', ' ')
+        name = name.title()
         return name
 
     def handle_boolean_question_answer(
