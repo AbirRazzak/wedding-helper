@@ -71,7 +71,7 @@ class SaveTheDateResponseParser(ISaveTheDateResponsesParser):
         self,
         answer: str
     ) -> list[str]:
-        delimiters = [',', '&', ' and ']
+        delimiters = [',', '&', ' and ', '\n']
         splits: list[str] = [answer]
 
         for delimiter in delimiters:
