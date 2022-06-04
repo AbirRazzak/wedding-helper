@@ -61,7 +61,7 @@ class SaveTheDateResponseParser(ISaveTheDateResponsesParser):
             # TODO - parse plus one entry to get name and age
             plus_ones.append(
                 SaveTheDatePlusOne(
-                    full_name=self.parse_full_name_response(plus_one_entry),
+                    full_name=self.parse_full_name_response(plus_one_entry)
                     # TODO populate the age attribute if it exists
                 )
             )
