@@ -7,10 +7,6 @@ from save_the_date.response import SaveTheDatePlusOne
 
 
 class SaveTheDateResponseParser(ISaveTheDateResponsesParser):
-    def get_responses(
-        self
-    ) -> list[SaveTheDateResponse]:
-        raise NotImplementedError()
 
     def parse_data_into_response(
         self,

@@ -12,7 +12,3 @@ class ISaveTheDateResponsesParser(abc.ABC):
         data: dict[str, str]
     ) -> SaveTheDateResponse:
         pass
-
-    @abc.abstractmethod
-    def get_responses(self) -> list[SaveTheDateResponse]:
-        pass
