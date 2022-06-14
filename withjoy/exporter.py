@@ -34,8 +34,8 @@ class WithjoyCSVExporter:
     ) -> list[str]:
 
         return [
-            withjoy_guest.name,
-            '',  # ignore last name for now
+            withjoy_guest.first_name,
+            withjoy_guest.last_name,
             withjoy_guest.email,
             withjoy_guest.party
         ]

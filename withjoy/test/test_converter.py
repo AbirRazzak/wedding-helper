@@ -10,7 +10,9 @@ from withjoy.party_name_generator import PartyNameGenerator
 
 
 def test_convert_save_the_date_repo():
-    name = 'Foo Bar'
+    first_name = 'Foo'
+    last_name = 'Bar'
+    name = f'{first_name} {last_name}'
     email = 'foo@bar.com'
 
     save_the_date_repo = SaveTheDateResponseRepo(
@@ -27,7 +29,8 @@ def test_convert_save_the_date_repo():
     expected = WithjoyGuestList(
         guests=[
             WithjoyGuest(
-                name=name,
+                first_name=first_name,
+                last_name=last_name,
                 email=email
             )
         ]
@@ -42,9 +45,13 @@ def test_convert_save_the_date_repo():
 
 
 def test_convert_save_the_date_repo_with_plus_ones():
-    name = 'Foo Bar'
+    first_name = 'Foo'
+    last_name = 'Bar'
+    name = f'{first_name} {last_name}'
     email = 'foo@bar.com'
-    plus_one_name = 'Foo Bar Plus One'
+    plus_one_first_name = 'Foo Bar Plus'
+    plus_one_last_name = 'One'
+    plus_one_name = f'{plus_one_first_name} {plus_one_last_name}'
     party = 'foo-bar'
 
     save_the_date_repo = SaveTheDateResponseRepo(
@@ -66,12 +73,14 @@ def test_convert_save_the_date_repo_with_plus_ones():
     expected = WithjoyGuestList(
         guests=[
             WithjoyGuest(
-                name=name,
+                first_name=first_name,
+                last_name=last_name,
                 email=email,
                 party=party
             ),
             WithjoyGuest(
-                name=plus_one_name,
+                first_name=plus_one_first_name,
+                last_name=plus_one_last_name,
                 party=party
             )
         ]
@@ -86,7 +95,9 @@ def test_convert_save_the_date_repo_with_plus_ones():
 
 
 def test_convert_save_the_date_response():
-    name = 'Foo Bar'
+    first_name = 'Foo'
+    last_name = 'Bar'
+    name = f'{first_name} {last_name}'
     email = 'foo@bar.com'
 
     response = SaveTheDateResponse(
@@ -98,7 +109,35 @@ def test_convert_save_the_date_response():
 
     expected = [
         WithjoyGuest(
-            name=name,
+            first_name=first_name,
+            last_name=last_name,
+            email=email
+        )
+    ]
+
+    result = WithjoyConverter().convert_save_the_date_response_to_withjoy_guests(
+        save_the_date_response=response
+    )
+
+    assert result == expected
+
+
+def test_convert_save_the_date_response_with_no_last_name():
+    # This test case is because some placeholder values are in the Google forms that didn't include a last name
+    name = 'Foo'
+    email = 'foo@bar.com'
+
+    response = SaveTheDateResponse(
+        full_name=name,
+        email_address=email,
+        is_vaccinated=True,
+        is_hotel_needed=True
+    )
+
+    expected = [
+        WithjoyGuest(
+            first_name=name,
+            last_name='',
             email=email
         )
     ]
@@ -111,9 +150,13 @@ def test_convert_save_the_date_response():
 
 
 def test_convert_save_the_date_response_with_plus_ones():
-    name = 'Foo Bar'
+    first_name = 'Foo'
+    last_name = 'Bar'
+    name = f'{first_name} {last_name}'
     email = 'foo@bar.com'
-    plus_one_name = 'Plus One'
+    plus_one_first_name = 'Foo'
+    plus_one_last_name = 'Bar'
+    plus_one_name = f'{plus_one_first_name} {plus_one_last_name}'
 
     party_name_gen = PartyNameGenerator()
 
@@ -134,12 +177,14 @@ def test_convert_save_the_date_response_with_plus_ones():
 
     expected = [
         WithjoyGuest(
-            name=name,
+            first_name=first_name,
+            last_name=last_name,
             email=email,
             party=party
         ),
         WithjoyGuest(
-            name=plus_one_name,
+            first_name=plus_one_first_name,
+            last_name=plus_one_last_name,
             party=party
         )
     ]
